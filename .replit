@@ -7,6 +7,14 @@ channel = "stable-24_05"
 [deployment]
 run = ["sh", "-c", "npm run dev"]
 
+[[ports]]
+localPort = 5173
+externalPort = 80
+
+[[ports]]
+localPort = 5000
+externalPort = 5000
+
 [workflows]
 runButton = "Development"
 
