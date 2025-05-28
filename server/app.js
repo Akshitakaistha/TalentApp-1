@@ -20,6 +20,7 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'https://localhost:5173',
+    'http://localhost:3000',
     /\.replit\.dev$/,
     /\.repl\.co$/
   ],
@@ -50,5 +51,5 @@ app.use('/api/masterclasses', masterclassRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on http://0.0.0.0:${PORT}`);
 });
