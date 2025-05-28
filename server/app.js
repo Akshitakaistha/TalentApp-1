@@ -1,9 +1,16 @@
 
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+
+// Only require mongoose if we actually need database functionality
+let mongoose;
+try {
+  mongoose = require('mongoose');
+} catch (err) {
+  console.log('MongoDB not available, continuing without database...');
+}
 
 const authRoutes = require('./routes/auth');
 const internshipRoutes = require('./routes/internships');
@@ -17,10 +24,10 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: true,
+  origin: ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,11 +35,19 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/talentapp', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// MongoDB connection (optional)
+if (mongoose) {
+  mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/talentapp', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => {
+    console.log('📦 Connected to MongoDB');
+  }).catch((err) => {
+    console.log('⚠️  MongoDB connection failed:', err.message);
+  });
+} else {
+  console.log('⚠️  Running without database connection');
+}
 
 // Routes
 app.use('/api/auth', authRoutes);
