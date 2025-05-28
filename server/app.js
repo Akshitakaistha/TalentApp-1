@@ -1,0 +1,44 @@
+
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const path = require('path');
+require('dotenv').config();
+
+const authRoutes = require('./routes/auth');
+const internshipRoutes = require('./routes/internships');
+const jobRoutes = require('./routes/jobs');
+const bootcampRoutes = require('./routes/bootcamps');
+const postgradRoutes = require('./routes/postgrad');
+const globalRoutes = require('./routes/global');
+const masterclassRoutes = require('./routes/masterclasses');
+
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// MongoDB connection
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/talentapp', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/internships', internshipRoutes);
+app.use('/api/jobs', jobRoutes);
+app.use('/api/bootcamps', bootcampRoutes);
+app.use('/api/postgrad', postgradRoutes);
+app.use('/api/global', globalRoutes);
+app.use('/api/masterclasses', masterclassRoutes);
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
+});

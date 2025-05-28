@@ -1,4 +1,6 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HeroSection from './components/sections/HeroSection';
@@ -12,30 +14,51 @@ import CompetitiveExamsSection from './components/sections/CompetitiveExamsSecti
 import InsightsSection from './components/sections/InsightsSection';
 import CounselingSection from './components/sections/CounselingSection';
 import LocationsSection from './components/sections/LocationsSection';
-import { ArrowRight, Clock, GraduationCap } from 'lucide-react';
+import LoginPage from './pages/LoginPage';
+import Dashboard from './pages/Dashboard';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+
+function HomePage() {
+  return (
+    <>
+      <HeroSection />
+      <InternshipsSection />
+      <JobsSection />
+      <BootcampsSection />
+      <PostGradSection />
+      <GlobalSection />
+      <EntranceExamsSection />
+      <CompetitiveExamsSection />
+      <InsightsSection />
+      <CounselingSection />
+      <LocationsSection />
+    </>
+  );
+}
 
 function App() {
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-      
-      {/* Main Content */}
-      <main>
-        <HeroSection />
-        <InternshipsSection />
-        <JobsSection />
-        <BootcampsSection />
-        <PostGradSection />
-        <GlobalSection />
-        <EntranceExamsSection />
-        <CompetitiveExamsSection />
-        <InsightsSection />
-        <CounselingSection />
-        <LocationsSection />
-      </main>
-      
-      <Footer />
-    </div>
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen bg-white">
+          <Header />
+          
+          <main>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/dashboard/*" element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
+            </Routes>
+          </main>
+          
+          <Footer />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
