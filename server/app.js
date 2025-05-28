@@ -17,13 +17,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://localhost:5173',
-    'http://localhost:3000',
-    /\.replit\.dev$/,
-    /\.repl\.co$/
-  ],
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -50,6 +44,23 @@ app.use('/api/global', globalRoutes);
 app.use('/api/masterclasses', masterclassRoutes);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on http://0.0.0.0:${PORT}`);
+
+app.listen(PORT, '0.0.0.0', (err) => {
+  if (err) {
+    console.error('Error starting server:', err);
+    process.exit(1);
+  }
+  console.log(`🚀 Server is running on http://0.0.0.0:${PORT}`);
+  console.log(`📡 API endpoints available at http://0.0.0.0:${PORT}/api`);
+});
+
+// Add error handling for uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err);
+  process.exit(1);
 });
