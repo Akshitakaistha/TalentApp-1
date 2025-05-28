@@ -1,24 +1,20 @@
+
 import React from 'react';
+import { LucideIcon } from 'lucide-react';
 
 interface NavLinkProps {
-  icon: React.ReactNode;
-  label: string;
   href: string;
-  mobile?: boolean;
+  label: string;
+  icon: LucideIcon;
 }
 
-const NavLink: React.FC<NavLinkProps> = ({ icon, label, href, mobile }) => {
+const NavLink: React.FC<NavLinkProps> = ({ href, label, icon: Icon }) => {
   return (
-    <a 
+    <a
       href={href}
-      className={`
-        flex items-center transition-all duration-200
-        ${mobile 
-          ? 'text-blue-800 hover:text-blue-600 text-lg py-2' 
-          : 'text-blue-800 hover:text-blue-600 font-medium'}
-      `}
+      className="flex items-center space-x-2 text-white hover:text-blue-200 transition-colors group"
     >
-      <span className="mr-2">{icon}</span>
+      <Icon className="h-4 w-4" />
       <span>{label}</span>
     </a>
   );
