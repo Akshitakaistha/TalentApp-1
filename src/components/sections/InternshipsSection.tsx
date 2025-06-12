@@ -1,148 +1,140 @@
-import React, { useState } from 'react';
-import { Building, DollarSign, Clock } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import SectionTitle from '../ui/SectionTitle';
-import FilterBar from '../ui/FilterBar';
-import ProgramCard from '../ui/ProgramCard';
-import { Internship, FilterOption } from '../../types';
+import CustomFilterBar from '../ui/CustomFilterBar';
+import InternshipCard from '../ui/InternshipCard';
+import { Internship } from '../../types';
 
-// Sample data
-const internshipFilters = {
-  type: {
-    label: 'Internship Type',
-    options: [
-      { id: 'stipend', label: 'Stipend Based', value: 'stipend' },
-      { id: 'freeship', label: 'Freeship', value: 'freeship' },
-      { id: 'paid', label: 'Paid Training', value: 'paid' },
-    ],
-    type: 'radio',
-  },
-  duration: {
-    label: 'Duration',
-    options: [
-      { id: '1-3', label: '1-3 Months', value: '1-3' },
-      { id: '3-6', label: '3-6 Months', value: '3-6' },
-      { id: '6+', label: '6+ Months', value: '6+' },
-    ],
-    type: 'dropdown',
-  },
-};
-
-const internships: Internship[] = [
-  {
-    id: '1',
-    title: 'Software Development Intern',
-    description: 'Join our tech team to work on real-world projects using the latest technologies.',
-    category: 'Technology',
-    tags: ['Programming', 'Web Development', 'Software Engineering'],
-    imageUrl: 'https://images.pexels.com/photos/3861958/pexels-photo-3861958.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    stipend: '₹15,000/month',
-    duration: '6 months',
-    type: 'stipend',
-    company: 'TechSolutions Inc.',
-    location: 'Bangalore',
-  },
-  {
-    id: '2',
-    title: 'Digital Marketing Internship',
-    description: 'Learn digital marketing strategies while working on real campaigns for our clients.',
-    category: 'Marketing',
-    tags: ['Social Media', 'SEO', 'Content Writing'],
-    imageUrl: 'https://images.pexels.com/photos/914931/pexels-photo-914931.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    stipend: '₹10,000/month',
-    duration: '3 months',
-    type: 'stipend',
-    company: 'MarketEdge',
-    location: 'Delhi',
-  },
-  {
-    id: '3',
-    title: 'Data Science Training Program',
-    description: 'Comprehensive training in data science, machine learning, and analytics.',
-    category: 'Data Science',
-    tags: ['Python', 'ML', 'Statistics'],
-    imageUrl: 'https://images.pexels.com/photos/11035386/pexels-photo-11035386.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    stipend: 'Certificate',
-    duration: '2 months',
-    type: 'freeship',
-    company: 'DataTech Academy',
-    location: 'Mumbai',
-  },
-  {
-    id: '4',
-    title: 'UI/UX Design Internship',
-    description: 'Create beautiful, intuitive user interfaces for web and mobile applications.',
-    category: 'Design',
-    tags: ['UI Design', 'Figma', 'User Research'],
-    imageUrl: 'https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    stipend: '₹12,000/month',
-    duration: '4 months',
-    type: 'paid',
-    company: 'DesignHub',
-    location: 'Hyderabad',
-  },
-];
+const API_BASE_URL = 'http://localhost:3000/api';
+const ITEMS_PER_PAGE = 4;
 
 const InternshipsSection: React.FC = () => {
-  const [filteredInternships, setFilteredInternships] = useState<Internship[]>(internships);
-  const [filters, setFilters] = useState<Record<string, string | string[]>>({});
+  const [internships, setInternships] = useState<Internship[]>([]);
+  const [filteredInternships, setFilteredInternships] = useState<Internship[]>([]);
+  const [filters, setFilters] = useState<Record<string, string>>({});
+  const [filterConfig, setFilterConfig] = useState<any>({});
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const handleFilterChange = (filterKey: string, value: string | string[]) => {
-    const newFilters = { ...filters, [filterKey]: value };
-    setFilters(newFilters);
-    
-    // Apply filters
-    const filtered = internships.filter(internship => {
-      // Check type filter
-      if (newFilters.type && internship.type !== newFilters.type) {
-        return false;
+  useEffect(() => {
+    const fetchInternships = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/internships`);
+        const data = res.data;
+        setInternships(data);
+        setFilteredInternships(data);
+        generateFilterConfig(data);
+      } catch (error) {
+        console.error('Error fetching internships:', error);
       }
-      
-      // Add other filter logic as needed
-      
-      return true;
+    };
+
+    fetchInternships();
+  }, []);
+
+  const generateFilterConfig = (data: Internship[]) => {
+    const getUniqueOptions = (key: keyof Internship): FilterOption[] => {
+      const values = [...new Set(data.map((item) => item[key]?.toString().trim()).filter(Boolean))];
+      return values.map((val) => ({ label: val, value: val }));
+    };
+
+    const config = {
+      domain: {
+        label: 'Domain',
+        options: getUniqueOptions('domain'),
+        type: 'dropdown',
+      },
+      duration: {
+        label: 'Duration',
+        options: getUniqueOptions('duration'),
+        type: 'dropdown',
+      },
+      shiftType: {
+        label: 'Shift Type',
+        options: getUniqueOptions('shiftType'),
+        type: 'radio',
+      },
+      jobType: {
+        label: 'Job Type',
+        options: getUniqueOptions('jobType'),
+        type: 'dropdown',
+      },
+    };
+
+    setFilterConfig(config);
+  };
+
+  const handleFilterChange = (key: string, value: string) => {
+    const newFilters = { ...filters, [key]: value };
+    setFilters(newFilters);
+    setCurrentPage(1);
+
+    const filtered = internships.filter((item) => {
+      return Object.entries(newFilters).every(([fKey, fVal]) =>
+        fVal ? item[fKey]?.toString().trim() === fVal : true
+      );
     });
-    
+
     setFilteredInternships(filtered);
   };
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredInternships.length / ITEMS_PER_PAGE);
+  const paginatedInternships = filteredInternships.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   return (
     <section id="internships" className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
-        <SectionTitle 
-          title="Internships & Experiential Learning" 
+        <SectionTitle
+          title="Internships & Experiential Learning"
           subtitle="Gain practical experience through on-job training with industry leaders"
         />
-        
-        <FilterBar 
-          filters={internshipFilters} 
-          onFilterChange={handleFilterChange} 
-        />
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredInternships.map(internship => (
-            <ProgramCard 
-              key={internship.id} 
-              program={internship}
-              type="internship"
-              additionalInfo={
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center text-gray-700">
-                    <Building size={16} className="mr-2" />
-                    <span>{internship.company}</span>
-                  </div>
-                  <div className="flex items-center text-gray-700">
-                    <DollarSign size={16} className="mr-2" />
-                    <span>{internship.stipend}</span>
-                  </div>
-                  <div className="flex items-center text-gray-700">
-                    <Clock size={16} className="mr-2" />
-                    <span>{internship.duration}</span>
-                  </div>
-                </div>
-              }
-            />
+        {Object.keys(filterConfig).length > 0 && (
+          <CustomFilterBar
+            filters={filterConfig}
+            selectedFilters={filters}
+            onFilterChange={handleFilterChange}
+          />
+        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
+          {paginatedInternships.map((internship) => (
+            <InternshipCard key={internship._id} internship={internship} />
           ))}
         </div>
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-10 space-x-2">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1 bg-white text-black border rounded hover:bg-gray-100 disabled:opacity-50"
+            >
+              Prev
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => setCurrentPage(i + 1)}
+                className={`px-3 py-1 border rounded ${
+                  currentPage === i + 1
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-black hover:bg-gray-100'
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 bg-white text-black border rounded hover:bg-gray-100 disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

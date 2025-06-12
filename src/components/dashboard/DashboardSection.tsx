@@ -34,7 +34,7 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
 
   const fetchItems = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/${apiEndpoint}`);
+      const response = await axios.get(`http://localhost:3000/api/${apiEndpoint}`);
       setItems(response.data);
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -47,12 +47,12 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
     try {
       if (editingItem) {
         // Update existing item
-        await axios.put(`http://localhost:5000/api/${apiEndpoint}/${editingItem._id}`, formData, {
+        await axios.put(`http://localhost:3000/api/${apiEndpoint}/${editingItem._id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
       } else {
         // Create new item
-        await axios.post(`http://localhost:5000/api/${apiEndpoint}`, formData, {
+        await axios.post(`http://localhost:3000/api/${apiEndpoint}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
       }
@@ -72,7 +72,7 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/${apiEndpoint}/${id}`);
+        await axios.delete(`http://localhost:3000/api/${apiEndpoint}/${id}`);
         fetchItems();
       } catch (error) {
         console.error('Error deleting item:', error);

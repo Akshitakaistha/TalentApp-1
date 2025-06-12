@@ -16,11 +16,11 @@ router.get('/', auth, async (req, res) => {
 });
 
 // POST create job
-router.post('/', auth, upload.single('internshipBanner'), async (req, res) => {
+router.post('/', auth, upload.single('jobBanner'), async (req, res) => {
   try {
     const jobData = {
       ...req.body,
-      internshipBanner: req.file ? `/uploads/${req.file.filename}` : '',
+      jobBanner: req.file ? `/uploads/${req.file.filename}` : '',
       skills: Array.isArray(req.body.skills) ? req.body.skills : req.body.skills.split(',').map(s => s.trim())
     };
 
@@ -39,6 +39,35 @@ router.delete('/:id', auth, async (req, res) => {
     res.json({ message: 'Job deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+router.put('/:id', auth, upload.single('jobBanner'), async (req, res) => {
+  try {
+    const updateData = {
+      ...req.body,
+      skills: Array.isArray(req.body.skills)
+        ? req.body.skills
+        : req.body.skills.split(',').map((s) => s.trim())
+    };
+
+    if (req.file) {
+      updateData.jobBanner = `/uploads/${req.file.filename}`;
+    }
+
+    const updatedJob = await Job.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedJob) {
+      return res.status(404).json({ message: 'Job not found' });
+    }
+
+    res.json(updatedJob);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 });
 

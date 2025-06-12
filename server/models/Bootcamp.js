@@ -26,17 +26,21 @@ const bootcampSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  duration: {
-    type: String,
-    required: true
-  },
   location: {
     type: String,
-    enum: ['In Class', 'Online', 'Hybrid', 'Distance'],
+    // enum: ['In Class', 'Online', 'Hybrid', 'Distance'],
+    required: true
+  },
+  bootCampDesc: {
+    type: String,
     required: true
   },
   industryType: {
     type: String,
+    required: true
+  },
+  date: {
+    type: Date,
     required: true
   }
 }, {

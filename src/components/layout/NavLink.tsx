@@ -12,7 +12,7 @@ const NavLink: React.FC<NavLinkProps> = ({ href, label, icon: Icon }) => {
   return (
     <a
       href={href}
-      className="flex items-center space-x-2 text-white hover:text-blue-200 transition-colors group"
+      className="flex items-center space-x-2 text-blue-900 hover:text-blue-200 font-bold transition-colors group"
     >
       <Icon className="h-4 w-4" />
       <span>{label}</span>

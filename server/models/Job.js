@@ -2,11 +2,11 @@
 const mongoose = require('mongoose');
 
 const jobSchema = new mongoose.Schema({
-  internshipBanner: {
+  jobBanner: {
     type: String,
     required: true
   },
-  domain: {
+  industryType : {
     type: String,
     required: true
   },
@@ -14,7 +14,7 @@ const jobSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  internshipName: {
+  jobName: {
     type: String,
     required: true
   },
@@ -30,15 +30,15 @@ const jobSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  stipendOrCertificate: {
-    type: String,
-    required: true
-  },
-  duration: {
+  salaryPackage: {
     type: String,
     required: true
   },
   location: {
+    type: String,
+    required: true
+  },
+  companyWebsiteUrl: {
     type: String,
     required: true
   },
@@ -51,18 +51,6 @@ const jobSchema = new mongoose.Schema({
     required: true
   },
   shiftType: {
-    type: String,
-    required: true
-  },
-  industryType: {
-    type: String,
-    required: true
-  },
-  package: {
-    type: String,
-    required: true
-  },
-  companyWebsite: {
     type: String,
     required: true
   },

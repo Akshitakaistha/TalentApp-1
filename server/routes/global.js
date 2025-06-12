@@ -42,4 +42,33 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
+router.put('/:id', auth, upload.single('banner'), async (req, res) => {
+  try {
+    const updateData = {
+      ...req.body,
+      skills: Array.isArray(req.body.skills)
+        ? req.body.skills
+        : req.body.skills.split(',').map((s) => s.trim())
+    };
+
+    if (req.file) {
+      updateData.banner = `/uploads/${req.file.filename}`;
+    }
+
+    const updatedGlobalCourse = await Global.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedGlobalCourse) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+    res.json(updatedGlobalCourse);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 module.exports = router;

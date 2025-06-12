@@ -1,177 +1,221 @@
-import React, { useState } from 'react';
-import { Globe, MapPin, Clock } from 'lucide-react';
-import SectionTitle from '../ui/SectionTitle';
-import FilterBar from '../ui/FilterBar';
-import ProgramCard from '../ui/ProgramCard';
-import { GlobalProgram } from '../../types';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Globe, Plane, Award, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import GlobalProgramCard from '../ui/GlobalProgramCard';
 
-// Sample data
-const globalFilters = {
-  type: {
-    label: 'Program Type',
-    options: [
-      { id: 'immersion', label: 'Immersion', value: 'immersion' },
-      { id: 'certificate', label: 'Certificate', value: 'certificate' },
-      { id: 'conference', label: 'Conference', value: 'conference' },
-      { id: 'pathways', label: 'Degree Pathways', value: 'pathways' },
-    ],
-    type: 'radio',
-  },
-  region: {
-    label: 'Region',
-    options: [
-      { id: 'usa', label: 'USA & Canada', value: 'North America' },
-      { id: 'europe', label: 'Europe', value: 'Europe' },
-      { id: 'asia', label: 'Asia Pacific', value: 'Asia Pacific' },
-      { id: 'australia', label: 'Australia & NZ', value: 'Australia' },
-    ],
-    type: 'dropdown',
-  },
-};
+interface GlobalProgram {
+  _id: string;
+  banner: string;
+  specialization: string;
+  courseName: string;
+  skills: string[];
+  organizationName: string;
+  courseFee: string;
+  duration: string;
+  location: string;
+  organizationWebsite: string;
+  courseType: string;
+  courseDetails: string;
+  industryDomain: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
-const globalPrograms: GlobalProgram[] = [
-  {
-    id: '1',
-    title: 'Silicon Valley Tech Immersion Program',
-    description: 'Two-week intensive immersion into the Silicon Valley tech ecosystem, with company visits and workshops.',
-    category: 'Technology',
-    tags: ['Tech', 'Startup', 'Innovation'],
-    imageUrl: 'https://images.pexels.com/photos/7096/people-woman-coffee-meeting.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    type: 'immersion',
-    country: 'USA',
-    duration: '2 Weeks',
-  },
-  {
-    id: '2',
-    title: 'International Business Certificate - London',
-    description: 'Certificate program in international business practices at a leading London business school.',
-    category: 'Business',
-    tags: ['Business', 'International', 'Finance'],
-    imageUrl: 'https://images.pexels.com/photos/2098619/pexels-photo-2098619.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    type: 'certificate',
-    country: 'UK',
-    duration: '3 Months',
-  },
-  {
-    id: '3',
-    title: 'Global Youth Leadership Conference - Singapore',
-    description: 'Annual conference bringing together young leaders from around the world to discuss global challenges.',
-    category: 'Leadership',
-    tags: ['Youth', 'Leadership', 'Global'],
-    imageUrl: 'https://images.pexels.com/photos/2833037/pexels-photo-2833037.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    type: 'conference',
-    country: 'Singapore',
-    duration: '1 Week',
-  },
-  {
-    id: '4',
-    title: 'Study Abroad Pathway - Australia',
-    description: 'Complete your degree at a top Australian university with credit transfer and scholarship opportunities.',
-    category: 'Education',
-    tags: ['Study Abroad', 'Degree', 'International'],
-    imageUrl: 'https://images.pexels.com/photos/159490/yale-university-landscape-universities-schools-159490.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    type: 'pathways',
-    country: 'Australia',
-    duration: '1-3 Years',
-  },
-];
+const PROGRAMS_PER_PAGE = 3;
+
+const API_BASE_URL = 'http://localhost:3000/api';
 
 const GlobalSection: React.FC = () => {
-  const [filteredPrograms, setFilteredPrograms] = useState<GlobalProgram[]>(globalPrograms);
+  const [globalPrograms, setGlobalPrograms] = useState<GlobalProgram[]>([]);
+  const [filteredPrograms, setFilteredPrograms] = useState<GlobalProgram[]>([]);
   const [filters, setFilters] = useState<Record<string, string | string[]>>({});
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    const fetchGlobalPrograms = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/global`);
+        setGlobalPrograms(res.data);
+        setFilteredPrograms(res.data);
+      } catch (error) {
+        console.error('Error fetching Global programs:', error);
+      }
+    };
+    fetchGlobalPrograms();
+  }, []);
 
   const handleFilterChange = (filterKey: string, value: string | string[]) => {
     const newFilters = { ...filters, [filterKey]: value };
     setFilters(newFilters);
-    
-    // Apply filters
+    setCurrentPage(1); // Reset to first page when filtering
     const filtered = globalPrograms.filter(program => {
-      // Check type filter
-      if (newFilters.type && program.type !== newFilters.type) {
-        return false;
-      }
-      
-      // Add region filter logic based on country
-      // This is simplified for demo purposes
-      
+      if (newFilters.specialization && program.specialization !== newFilters.specialization) return false;
+      if (newFilters.courseType && program.courseType !== newFilters.courseType) return false;
       return true;
     });
-    
     setFilteredPrograms(filtered);
   };
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredPrograms.length / PROGRAMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * PROGRAMS_PER_PAGE;
+  const endIndex = startIndex + PROGRAMS_PER_PAGE;
+  const currentPrograms = filteredPrograms.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of section
+    document.getElementById('global')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <section id="global" className="py-16 bg-gray-50">
+    <section id="global" className="py-16 bg-gradient-to-br from-gray-50 via-cyan-50 to-blue-50">
       <div className="container mx-auto px-4">
-        <SectionTitle 
-          title="Global Programs" 
-          subtitle="Get international exposure and broaden your horizons with our global education opportunities"
-        />
-        
-        <FilterBar 
-          filters={globalFilters} 
-          onFilterChange={handleFilterChange} 
-        />
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredPrograms.map(program => (
-            <ProgramCard 
-              key={program.id} 
-              program={program}
-              type="global"
-              additionalInfo={
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center text-gray-700">
-                    <Globe size={16} className="mr-2" />
-                    <span>
-                      {program.type === 'immersion' ? 'Immersion Program' : 
-                       program.type === 'certificate' ? 'Certificate Program' : 
-                       program.type === 'conference' ? 'Conference' : 'Degree Pathway'}
-                    </span>
-                  </div>
-                  <div className="flex items-center text-gray-700">
-                    <MapPin size={16} className="mr-2" />
-                    <span>{program.country}</span>
-                  </div>
-                  <div className="flex items-center text-gray-700">
-                    <Clock size={16} className="mr-2" />
-                    <span>{program.duration}</span>
-                  </div>
-                </div>
-              }
-            />
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Globe className="text-cyan-600" size={32} />
+            <h2 className="text-4xl font-bold text-gray-900">Global Programs</h2>
+          </div>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+            Expand your horizons with international education opportunities and global exposure
+          </p>
+          <div className="flex flex-wrap justify-center gap-6 mb-8">
+            <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
+              <Plane className="text-cyan-500" size={20} />
+              <span className="text-sm font-semibold text-gray-700">International Exposure</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
+              <Users className="text-blue-500" size={20} />
+              <span className="text-sm font-semibold text-gray-700">Global Network</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
+              <Award className="text-amber-500" size={20} />
+              <span className="text-sm font-semibold text-gray-700">World-Class Universities</span>
+            </div>
+          </div>
+        </div>
+        {/* Filter Bar */}
+        <div className="mb-8 flex justify-center">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-gray-200">
+            <div className="flex flex-wrap gap-4 items-center">
+              <span className="text-sm font-semibold text-gray-700">Filter by:</span>
+              <select 
+                className="px-4 py-2 rounded-lg text-black border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                onChange={(e) => handleFilterChange('specialization', e.target.value)}
+              >
+                <option value="">All Specializations</option>
+                <option value="Technology">Technology</option>
+                <option value="Business">Business</option>
+                <option value="Finance">Finance</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Design">Design</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Marketing">Marketing</option>
+              </select>
+              <select 
+                className="px-4 py-2 rounded-lg text-black border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                onChange={(e) => handleFilterChange('courseType', e.target.value)}
+              >
+                <option value="">All Program Types</option>
+                <option value="Certificate">Certificate</option>
+                <option value="Diploma">Diploma</option>
+                <option value="Masters">Masters</option>
+                <option value="Executive">Executive</option>
+                <option value="Workshop">Workshop</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        {/* Program Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {currentPrograms.map(program => (
+            <GlobalProgramCard key={program._id} program={program} />
           ))}
         </div>
-        
-        {/* Global Experience Highlight */}
-        <div className="mt-12 bg-blue-700 text-white rounded-lg overflow-hidden">
-          <div className="grid md:grid-cols-2">
-            <div className="p-8">
-              <h3 className="text-2xl font-bold mb-4">Global Exposure Benefits</h3>
-              <ul className="space-y-2">
-                <li className="flex items-start">
-                  <span className="mr-2">•</span>
-                  <span>Enhanced career prospects with international experience</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">•</span>
-                  <span>Develop cross-cultural communication skills</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">•</span>
-                  <span>Build a global professional network</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">•</span>
-                  <span>Gain a global perspective on your field</span>
-                </li>
-              </ul>
-              <button className="mt-6 bg-white text-blue-700 hover:bg-blue-50 px-5 py-2 rounded-full font-medium transition-colors">
-                Explore All Global Programs
-              </button>
+        {/* No Results */}
+        {filteredPrograms.length === 0 && (
+          <div className="text-center py-12">
+            <Globe className="mx-auto text-gray-400 mb-4" size={48} />
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">No programs found</h3>
+            <p className="text-gray-500">Try adjusting your filters to see more results.</p>
+          </div>
+        )}
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                currentPage === 1
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-white text-cyan-600 hover:bg-cyan-50 shadow-sm hover:shadow-md'
+              }`}
+            >
+              <ChevronLeft size={16} />
+              Previous
+            </motion.button>
+            <div className="flex gap-2">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                <motion.button
+                  key={page}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => handlePageChange(page)}
+                  className={`w-10 h-10 rounded-lg font-semibold transition-all duration-300 ${
+                    currentPage === page
+                      ? 'bg-cyan-600 text-white shadow-lg'
+                      : 'bg-white text-gray-600 hover:bg-cyan-50 hover:text-cyan-600 shadow-sm hover:shadow-md'
+                  }`}
+                >
+                  {page}
+                </motion.button>
+              ))}
             </div>
-            <div className="bg-cover bg-center h-64 md:h-auto" style={{ backgroundImage: 'url("https://images.pexels.com/photos/2114014/pexels-photo-2114014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")' }}>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                currentPage === totalPages
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-white text-cyan-600 hover:bg-cyan-50 shadow-sm hover:shadow-md'
+              }`}
+            >
+              Next
+              <ChevronRight size={16} />
+            </motion.button>
+          </div>
+        )}
+        {/* Global Experience Banner */}
+        <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-3xl p-8 text-center text-white shadow-2xl mt-16">
+          <div className="max-w-4xl mx-auto">
+            <h3 className="text-3xl font-bold mb-4">Transform Your Career with Global Education</h3>
+            <p className="text-xl mb-6 text-cyan-50">
+              Join thousands of professionals who have accelerated their careers through international 
+              education and global networking opportunities.
+            </p>
+            <div className="flex flex-wrap justify-center gap-6 mb-8">
+              <div className="text-center">
+                <div className="text-3xl font-bold">50+</div>
+                <div className="text-cyan-100">Partner Universities</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold">25</div>
+                <div className="text-cyan-100">Countries</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold">5,000+</div>
+                <div className="text-cyan-100">Global Alumni</div>
+              </div>
             </div>
+            <button className="bg-white text-cyan-600 hover:bg-cyan-50 font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+              Start Your Global Journey
+            </button>
           </div>
         </div>
       </div>

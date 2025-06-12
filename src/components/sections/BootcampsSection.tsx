@@ -1,121 +1,250 @@
-import React, { useState } from 'react';
-import { GraduationCap, Clock, BookOpen } from 'lucide-react';
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
+// import SectionTitle from '../ui/SectionTitle';
+// import FilterBar from '../ui/FilterBar';
+// import { Bootcamp } from '../../types';
+// import BootcampCard from '../ui/BootcampCard';
+
+// const API_BASE_URL = 'http://localhost:3000/api';
+
+// // Sample data
+// const bootcampFilters = {
+//   qualification: {
+//     label: 'Your Qualification',
+//     options: [
+//       { id: 'any', label: 'Any Background', value: 'Any' },
+//       { id: 'it', label: 'IT/Computer Science', value: 'IT' },
+//       { id: 'business', label: 'Business/Commerce', value: 'Business' },
+//       { id: 'arts', label: 'Arts & Humanities', value: 'Arts' },
+//       { id: 'science', label: 'Science', value: 'Science' },
+//     ],
+//     type: 'dropdown',
+//   },
+//   goal: {
+//     label: 'What You Are Looking For',
+//     options: [
+//       { id: 'skills', label: 'New Skills', value: 'Skills' },
+//       { id: 'career', label: 'Career Change', value: 'Career' },
+//       { id: 'certification', label: 'Certification', value: 'Certification' },
+//       { id: 'startup', label: 'Startup Training', value: 'Startup' },
+//     ],
+//     type: 'dropdown',
+//   },
+//   duration: {
+//     label: 'Duration',
+//     options: [
+//       { id: '1-4', label: '1-4 Weeks', value: '1-4 Weeks' },
+//       { id: '1-3', label: '1-3 Months', value: '1-3 Months' },
+//       { id: '3+', label: '3+ Months', value: '3+ Months' },
+//     ],
+//     type: 'dropdown',
+//   },
+// };
+// const BootcampsSection: React.FC = () => {
+//   const [filters, setFilters] = useState<Record<string, string | string[]>>({});
+//   const [bootcamps, setBootcamps] = useState<Bootcamp[]>([]);
+//   const [filteredBootcamps, setFilteredBootcamps] = useState<Bootcamp[]>([]);
+  
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const bootcampsPerPage = 3; // Changed from 6 to 3
+
+//   const indexOfLast = currentPage * bootcampsPerPage;
+//   const indexOfFirst = indexOfLast - bootcampsPerPage;
+//   const currentBootcamps = filteredBootcamps.slice(indexOfFirst, indexOfLast);
+
+//   useEffect(() => {
+//     const fetchBootcamps = async () => {
+//       try {
+//         const res = await axios.get(`${API_BASE_URL}/bootcamps`);
+//         setBootcamps(res.data);
+//         setFilteredBootcamps(res.data);
+//       } catch (error) {
+//         console.error('Error fetching bootcamps:', error);
+//       }
+//     };
+//     fetchBootcamps();
+//   }, []);
+
+//   const handleFilterChange = (filterKey: string, value: string | string[]) => {
+//     const newFilters = { ...filters, [filterKey]: value };
+//     setFilters(newFilters);
+//     setCurrentPage(1);
+
+//     const filtered = bootcamps.filter(bootcamp => {
+//       if (newFilters.qualification && bootcamp.qualification !== newFilters.qualification && newFilters.qualification !== 'Any') {
+//         return false;
+//       }
+//       if (newFilters.goal && bootcamp.goal !== newFilters.goal) {
+//         return false;
+//       }
+//       if (newFilters.duration && bootcamp.duration !== newFilters.duration) {
+//         return false;
+//       }
+//       return true;
+//     });
+
+//     setFilteredBootcamps(filtered);
+//   };
+
+//   const totalPages = Math.ceil(filteredBootcamps.length / bootcampsPerPage);
+
+//   const renderPagination = () => (
+//     <div className="flex justify-center mt-8">
+//       {[...Array(totalPages)].map((_, i) => (
+//         <button
+//           key={i}
+//           onClick={() => setCurrentPage(i + 1)}
+//           className={`mx-1 px-3 py-1 rounded border ${
+//             currentPage === i + 1 ? 'bg-gray-800 text-white' : 'bg-white text-black'
+//           }`}
+//         >
+//           {i + 1}
+//         </button>
+//       ))}
+//     </div>
+//   );
+
+//   return (
+//     <section id="bootcamps" className="py-16 bg-gray-50">
+//       <div className="container mx-auto px-4">
+//         <SectionTitle 
+//           title="Bootcamps - Skill Programs" 
+//           subtitle="Intensive training programs designed to help you acquire in-demand skills quickly"
+//         />
+//         <FilterBar 
+//           filters={bootcampFilters} 
+//           onFilterChange={handleFilterChange} 
+//         />
+//         <div className="bg-gradient-to-br from-[#f8f8f8] to-[#eaeaea] py-12 px-4 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+//           {currentBootcamps.map((bootcamp) => (
+//             <BootcampCard key={bootcamp?._id} bootcamp={bootcamp} />
+//           ))}
+//         </div>
+//         {renderPagination()}
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default BootcampsSection;
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import SectionTitle from '../ui/SectionTitle';
 import FilterBar from '../ui/FilterBar';
-import ProgramCard from '../ui/ProgramCard';
 import { Bootcamp } from '../../types';
+import BootcampCard from '../ui/BootcampCard';
 
-// Sample data
-const bootcampFilters = {
-  qualification: {
-    label: 'Your Qualification',
-    options: [
-      { id: 'any', label: 'Any Background', value: 'Any' },
-      { id: 'it', label: 'IT/Computer Science', value: 'IT' },
-      { id: 'business', label: 'Business/Commerce', value: 'Business' },
-      { id: 'arts', label: 'Arts & Humanities', value: 'Arts' },
-      { id: 'science', label: 'Science', value: 'Science' },
-    ],
-    type: 'dropdown',
-  },
-  goal: {
-    label: 'What You Are Looking For',
-    options: [
-      { id: 'skills', label: 'New Skills', value: 'Skills' },
-      { id: 'career', label: 'Career Change', value: 'Career' },
-      { id: 'certification', label: 'Certification', value: 'Certification' },
-      { id: 'startup', label: 'Startup Training', value: 'Startup' },
-    ],
-    type: 'dropdown',
-  },
-  duration: {
-    label: 'Duration',
-    options: [
-      { id: '1-4', label: '1-4 Weeks', value: '1-4 Weeks' },
-      { id: '1-3', label: '1-3 Months', value: '1-3 Months' },
-      { id: '3+', label: '3+ Months', value: '3+ Months' },
-    ],
-    type: 'dropdown',
-  },
-};
-
-const bootcamps: Bootcamp[] = [
-  {
-    id: '1',
-    title: 'Full Stack Web Development Bootcamp',
-    description: 'Comprehensive training in modern web development technologies, from frontend to backend.',
-    category: 'Technology',
-    tags: ['React', 'Node.js', 'MongoDB'],
-    imageUrl: 'https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    qualification: 'Any',
-    goal: 'Skills',
-    duration: '3 Months',
-  },
-  {
-    id: '2',
-    title: 'Data Science Intensive',
-    description: 'Accelerated program covering statistical analysis, machine learning, and data visualization.',
-    category: 'Data Science',
-    tags: ['Python', 'Machine Learning', 'Statistics'],
-    imageUrl: 'https://images.pexels.com/photos/5926382/pexels-photo-5926382.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    qualification: 'Science',
-    goal: 'Career',
-    duration: '2 Months',
-  },
-  {
-    id: '3',
-    title: 'Digital Marketing Masterclass',
-    description: 'Learn SEO, social media marketing, content strategy, and performance marketing.',
-    category: 'Marketing',
-    tags: ['SEO', 'Social Media', 'Analytics'],
-    imageUrl: 'https://images.pexels.com/photos/905163/pexels-photo-905163.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    qualification: 'Any',
-    goal: 'Certification',
-    duration: '6 Weeks',
-  },
-  {
-    id: '4',
-    title: 'UX/UI Design Bootcamp',
-    description: 'Intensive training in user experience design, interface design, and prototyping tools.',
-    category: 'Design',
-    tags: ['UX Research', 'UI Design', 'Figma'],
-    imageUrl: 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    qualification: 'Any',
-    goal: 'Skills',
-    duration: '2 Months',
-  },
-];
+const API_BASE_URL = 'http://localhost:3000/api';
 
 const BootcampsSection: React.FC = () => {
-  const [filteredBootcamps, setFilteredBootcamps] = useState<Bootcamp[]>(bootcamps);
+  const [bootcamps, setBootcamps] = useState<Bootcamp[]>([]);
+  const [filteredBootcamps, setFilteredBootcamps] = useState<Bootcamp[]>([]);
   const [filters, setFilters] = useState<Record<string, string | string[]>>({});
+  const [dynamicFilters, setDynamicFilters] = useState<any>({});
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const bootcampsPerPage = 3;
+
+  const indexOfLast = currentPage * bootcampsPerPage;
+  const indexOfFirst = indexOfLast - bootcampsPerPage;
+  const currentBootcamps = filteredBootcamps.slice(indexOfFirst, indexOfLast);
+
+  // Utility: Get unique values for filter options
+  const getUniqueValues = (arr: Bootcamp[], key: keyof Bootcamp) => {
+    const values = arr.map(item => item[key]).filter(Boolean);
+    return [...new Set(values)];
+  };
+
+  useEffect(() => {
+    const fetchBootcamps = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/bootcamps`);
+        const data: Bootcamp[] = res.data;
+
+        setBootcamps(data);
+        setFilteredBootcamps(data);
+        setFilters({});
+        setCurrentPage(1);
+
+        // Dynamically generate filter config
+        const filterOptions = {
+          goal: {
+            label: 'Goal',
+            type: 'dropdown',
+            options: getUniqueValues(data, 'goal').map((value) => ({
+              id: value,
+              label: value,
+              value: value,
+            })),
+          },
+          industryType: {
+            label: 'Industry',
+            type: 'dropdown',
+            options: getUniqueValues(data, 'industryType').map((value) => ({
+              id: value,
+              label: value,
+              value: value,
+            })),
+          },
+          location: {
+            label: 'Location',
+            type: 'dropdown',
+            options: getUniqueValues(data, 'location').map((value) => ({
+              id: value,
+              label: value,
+              value: value,
+            })),
+          },
+        };
+
+        setDynamicFilters(filterOptions);
+      } catch (error) {
+        console.error('Error fetching bootcamps:', error);
+      }
+    };
+
+    fetchBootcamps();
+  }, []);
 
   const handleFilterChange = (filterKey: string, value: string | string[]) => {
     const newFilters = { ...filters, [filterKey]: value };
     setFilters(newFilters);
-    
-    // Apply filters
-    const filtered = bootcamps.filter(bootcamp => {
-      // Check qualification filter
-      if (newFilters.qualification && bootcamp.qualification !== newFilters.qualification && newFilters.qualification !== 'Any') {
-        return false;
+    setCurrentPage(1);
+
+    const filtered = bootcamps.filter((bootcamp) => {
+      for (const key in newFilters) {
+        if (
+          newFilters[key] &&
+          bootcamp[key as keyof Bootcamp]?.toString().toLowerCase() !==
+            (newFilters[key] as string).toLowerCase()
+        ) {
+          return false;
+        }
       }
-      
-      // Check goal filter
-      if (newFilters.goal && bootcamp.goal !== newFilters.goal) {
-        return false;
-      }
-      
-      // Check duration filter
-      if (newFilters.duration && bootcamp.duration !== newFilters.duration) {
-        return false;
-      }
-      
       return true;
     });
-    
+
     setFilteredBootcamps(filtered);
   };
+
+  const totalPages = Math.ceil(filteredBootcamps.length / bootcampsPerPage);
+
+  const renderPagination = () => (
+    <div className="flex justify-center mt-8">
+      {[...Array(totalPages)].map((_, i) => (
+        <button
+          key={i}
+          onClick={() => setCurrentPage(i + 1)}
+          className={`mx-1 px-3 py-1 rounded border ${
+            currentPage === i + 1 ? 'bg-gray-800 text-white' : 'bg-white text-black'
+          }`}
+        >
+          {i + 1}
+        </button>
+      ))}
+    </div>
+  );
 
   return (
     <section id="bootcamps" className="py-16 bg-gray-50">
@@ -124,37 +253,15 @@ const BootcampsSection: React.FC = () => {
           title="Bootcamps - Skill Programs" 
           subtitle="Intensive training programs designed to help you acquire in-demand skills quickly"
         />
-        
-        <FilterBar 
-          filters={bootcampFilters} 
-          onFilterChange={handleFilterChange} 
-        />
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredBootcamps.map(bootcamp => (
-            <ProgramCard 
-              key={bootcamp.id} 
-              program={bootcamp}
-              type="bootcamp"
-              additionalInfo={
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center text-gray-700">
-                    <GraduationCap size={16} className="mr-2" />
-                    <span>For: {bootcamp.qualification} backgrounds</span>
-                  </div>
-                  <div className="flex items-center text-gray-700">
-                    <BookOpen size={16} className="mr-2" />
-                    <span>Goal: {bootcamp.goal}</span>
-                  </div>
-                  <div className="flex items-center text-gray-700">
-                    <Clock size={16} className="mr-2" />
-                    <span>Duration: {bootcamp.duration}</span>
-                  </div>
-                </div>
-              }
-            />
+        {Object.keys(dynamicFilters).length > 0 && (
+          <FilterBar filters={dynamicFilters} onFilterChange={handleFilterChange} />
+        )}
+        <div className="bg-gradient-to-br from-[#f8f8f8] to-[#eaeaea] py-12 px-4 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {currentBootcamps.map((bootcamp) => (
+            <BootcampCard key={bootcamp._id} bootcamp={bootcamp} />
           ))}
         </div>
+        {renderPagination()}
       </div>
     </section>
   );

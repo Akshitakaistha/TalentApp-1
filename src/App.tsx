@@ -17,21 +17,27 @@ import LocationsSection from './components/sections/LocationsSection';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import MasterClassSection from './components/sections/MasterClassSection';
+
+export const API_BASE_URL = 'http://localhost:3000';
 
 function HomePage() {
   return (
     <>
+    <Header />
       <HeroSection />
       <InternshipsSection />
       <JobsSection />
       <BootcampsSection />
       <PostGradSection />
+      <MasterClassSection />
       <GlobalSection />
       <EntranceExamsSection />
       <CompetitiveExamsSection />
       <InsightsSection />
       <CounselingSection />
       <LocationsSection />
+      <Footer />
     </>
   );
 }
@@ -41,7 +47,7 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="min-h-screen bg-white">
-          <Header />
+          {/* <Header /> */}
           
           <main>
             <Routes>
@@ -55,7 +61,7 @@ function App() {
             </Routes>
           </main>
           
-          <Footer />
+          {/* <Footer /> */}
         </div>
       </Router>
     </AuthProvider>

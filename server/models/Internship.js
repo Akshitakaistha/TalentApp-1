@@ -30,7 +30,7 @@ const internshipSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  stipendOrCertificate: {
+  stipend: {
     type: String,
     required: true
   },

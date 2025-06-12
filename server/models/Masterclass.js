@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const masterclassSchema = new mongoose.Schema({
-  bootcampBanner: {
+  masterClassBanner: {
     type: String,
     required: true
   },
@@ -10,7 +10,7 @@ const masterclassSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  bootcampName: {
+  masterClassName: {
     type: String,
     required: true
   },
@@ -26,16 +26,24 @@ const masterclassSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  duration: {
-    type: String,
-    required: true
-  },
+  // duration: {
+  //   type: String,
+  //   required: true
+  // },
   location: {
     type: String,
-    enum: ['In Class', 'Online', 'Hybrid', 'Distance'],
+    // enum: ['In Class', 'Online', 'Hybrid', 'Distance'],
     required: true
   },
   industryType: {
+    type: String,
+    required: true
+  },
+  date: {
+    type: Date,
+    required: true
+  },
+  masterClassDesc: {
     type: String,
     required: true
   }

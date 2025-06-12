@@ -16,11 +16,11 @@ router.get('/', auth, async (req, res) => {
 });
 
 // POST create masterclass
-router.post('/', auth, upload.single('bootcampBanner'), async (req, res) => {
+router.post('/', auth, upload.single('masterClassBanner'), async (req, res) => {
   try {
     const masterclassData = {
       ...req.body,
-      bootcampBanner: req.file ? `/uploads/${req.file.filename}` : '',
+      masterClassBanner: req.file ? `/uploads/${req.file.filename}` : '',
       skills: Array.isArray(req.body.skills) ? req.body.skills : req.body.skills.split(',').map(s => s.trim())
     };
 
@@ -39,6 +39,35 @@ router.delete('/:id', auth, async (req, res) => {
     res.json({ message: 'Masterclass deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+router.put('/:id', auth, upload.single('masterClassBanner'), async (req, res) => {
+  try {
+    const updateData = {
+      ...req.body,
+      skills: Array.isArray(req.body.skills)
+        ? req.body.skills
+        : req.body.skills.split(',').map((s) => s.trim())
+    };
+
+    if (req.file) {
+      updateData.MasterClassBanner = `/uploads/${req.file.filename}`;
+    }
+
+    const updatedMasterClass = await Masterclass.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedMasterClass) {
+      return res.status(404).json({ message: 'MasterClass not found' });
+    }
+
+    res.json(updatedMasterClass);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 });
 

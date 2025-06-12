@@ -44,13 +44,20 @@ const ProgramCard: React.FC<ProgramCardProps> = ({ program, type, additionalInfo
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">{program.description}</p>
         
         {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-4">
+        {/* <div className="flex flex-wrap gap-2 mb-4">
           {program.tags.slice(0, 3).map((tag, index) => (
             <span key={index} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
               {tag}
             </span>
           ))}
-        </div>
+        </div> */}
+        <div className="flex flex-wrap gap-2 mb-4">
+  {(program.tags || []).slice(0, 3).map((tag, index) => (
+    <span key={index} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+      {tag}
+    </span>
+  ))}
+</div>
         
         {/* Additional Info */}
         {additionalInfo && <div className="mb-4">{additionalInfo}</div>}

@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 const Internship = require('../models/Internship');
@@ -21,7 +20,8 @@ router.post('/', auth, upload.single('internshipBanner'), async (req, res) => {
     const internshipData = {
       ...req.body,
       internshipBanner: req.file ? `/uploads/${req.file.filename}` : '',
-      skills: Array.isArray(req.body.skills) ? req.body.skills : req.body.skills.split(',').map(s => s.trim())
+      skills: Array.isArray(req.body.skills) ? req.body.skills : req.body.skills.split(',').map(s => s.trim()),
+      stipend: req.body.stipend || ''
     };
 
     const internship = new Internship(internshipData);
@@ -41,5 +41,36 @@ router.delete('/:id', auth, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+// PUT update internship
+router.put('/:id', auth, upload.single('internshipBanner'), async (req, res) => {
+  try {
+    const updateData = {
+      ...req.body,
+      skills: Array.isArray(req.body.skills)
+        ? req.body.skills
+        : req.body.skills.split(',').map((s) => s.trim())
+    };
+
+    if (req.file) {
+      updateData.internshipBanner = `/uploads/${req.file.filename}`;
+    }
+
+    const updatedInternship = await Internship.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedInternship) {
+      return res.status(404).json({ message: 'Internship not found' });
+    }
+
+    res.json(updatedInternship);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 
 module.exports = router;

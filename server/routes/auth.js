@@ -1,15 +1,21 @@
 const express = require('express');
 const router = express.Router();
 
-// Hardcoded credentials
+// Hardcoded credentials for demonstration
 const ADMIN_CREDENTIALS = {
-  username: 'Bavneet1212x',
-  password: 'OkBavneet'
+  username: 'admin',
+  password: 'password123'
 };
 
 // Login route
 router.post('/login', (req, res) => {
-  const { username, password } = req.body;
+  let { username, password } = req.body;
+
+  console.log('Login attempt:', { username, password });
+
+  // Trim whitespace from username and password
+  username = username.trim();
+  password = password.trim();
 
   if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
     res.json({
@@ -17,6 +23,7 @@ router.post('/login', (req, res) => {
       user: { username }
     });
   } else {
+    console.log('Invalid credentials provided');
     res.status(401).json({
       success: false,
       message: 'Invalid credentials'
@@ -26,8 +33,6 @@ router.post('/login', (req, res) => {
 
 // Verify route (simplified)
 router.get('/verify', (req, res) => {
-  // For simplicity, we'll just return success
-  // In a real app, you might want to maintain session state
   res.json({ success: true, user: { username: ADMIN_CREDENTIALS.username } });
 });
 

@@ -1,4 +1,6 @@
-
+/**
+ * Used to create the modal for internships.
+ */
 import React, { useState, useEffect } from 'react';
 import { X, Upload } from 'lucide-react';
 
@@ -22,7 +24,7 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
     description: '',
     skills: ['', '', ''],
     companyName: '',
-    stipendOrCertificate: '',
+    stipend: '',
     duration: '',
     location: '',
     workingHours: '',
@@ -41,7 +43,7 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
         description: editData.description || '',
         skills: editData.skills || ['', '', ''],
         companyName: editData.companyName || '',
-        stipendOrCertificate: editData.stipendOrCertificate || '',
+        stipend: editData.stipend || '',
         duration: editData.duration || '',
         location: editData.location || '',
         workingHours: editData.workingHours || '',
@@ -49,7 +51,7 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
         shiftType: editData.shiftType || ''
       });
       if (editData.internshipBanner) {
-        setPreviewUrl(`http://localhost:5000${editData.internshipBanner}`);
+        setPreviewUrl(`http://localhost:3000${editData.internshipBanner}`);
       }
     } else {
       setFormData({
@@ -59,7 +61,7 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
         description: '',
         skills: ['', '', ''],
         companyName: '',
-        stipendOrCertificate: '',
+        stipend: '',
         duration: '',
         location: '',
         workingHours: '',
@@ -99,7 +101,6 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
     const submitData = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (key === 'skills') {
@@ -109,31 +110,18 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
       } else {
         submitData.append(key, value as string);
       }
-    });
-    
+    }); 
     if (bannerFile) {
       submitData.append('internshipBanner', bannerFile);
     }
-    
     onSubmit(submitData);
   };
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold">
-            {editData ? 'Edit Internship' : 'Create New Internship'}
-          </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <X className="h-6 w-6" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Banner Upload */}
+  function renderForm(){
+    return (
+      <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Internship Banner
@@ -159,8 +147,6 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
               </label>
             </div>
           </div>
-
-          {/* Form Fields */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -171,11 +157,11 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
                 name="domain"
                 value={formData.domain}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Technlogy"
+                className="w-full text-black border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Job Type
@@ -183,14 +169,14 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
               <input
                 type="text"
                 name="jobType"
+                placeholder="Online | Offline | Hybrid"
                 value={formData.jobType}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full text-black border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Internship Name
@@ -200,11 +186,10 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
               name="internshipName"
               value={formData.internshipName}
               onChange={handleInputChange}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full text-black border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Description
@@ -214,11 +199,10 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
               value={formData.description}
               onChange={handleInputChange}
               rows={3}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full text-black border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Skills (3 required)
@@ -231,13 +215,12 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
                   value={skill}
                   onChange={(e) => handleSkillChange(index, e.target.value)}
                   placeholder={`Skill ${index + 1}`}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full text-black border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
               ))}
             </div>
           </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -248,26 +231,24 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
                 name="companyName"
                 value={formData.companyName}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full  text-black border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Stipend/Certificate
+                Stipend
               </label>
               <input
                 type="text"
-                name="stipendOrCertificate"
-                value={formData.stipendOrCertificate}
+                name="stipend"
+                value={formData.stipend}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full text-black border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
           </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -278,11 +259,10 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
                 name="duration"
                 value={formData.duration}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full text-black border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Location
@@ -292,12 +272,11 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
                 name="location"
                 value={formData.location}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full text-black border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
           </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -308,11 +287,10 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
                 name="workingHours"
                 value={formData.workingHours}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full text-black border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Shift Type
@@ -321,7 +299,7 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
                 name="shiftType"
                 value={formData.shiftType}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full text-black border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               >
                 <option value="">Select shift type</option>
@@ -331,7 +309,6 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
               </select>
             </div>
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Job Profile
@@ -341,11 +318,10 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
               value={formData.jobProfile}
               onChange={handleInputChange}
               rows={3}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full text-black border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
-
           <div className="flex justify-end space-x-4 pt-4">
             <button
               type="button"
@@ -362,6 +338,21 @@ const InternshipModal: React.FC<InternshipModalProps> = ({
             </button>
           </div>
         </form>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold text-black">
+            {editData ? 'Edit Internship' : 'Create New Internship'}
+          </h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <X className="h-6 w-6" />
+          </button>
+        </div>
+        {renderForm()}
       </div>
     </div>
   );

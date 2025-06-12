@@ -1,99 +1,145 @@
-
+/**
+ * Function is used to create the login page. It consists of :
+ * - Username
+ * - Password
+ * - Submit button
+ * - Back to the home button : It will navigate to Home page 
+ */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Lock, User, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { Lock, User } from 'lucide-react';
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  /**
+   * Function will navigate to dashboard if credentials are corrects otherwise show invalid crdentials.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
     const success = await login(username, password);
-    
     if (success) {
       navigate('/dashboard');
     } else {
       setError('Invalid credentials. Please try again.');
     }
-    
     setLoading(false);
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to Dashboard
-          </h2>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="username" className="sr-only">
-                Username
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-            </div>
+  function loginForm(){
+    return (
+      <form className="login-form mb-3" onSubmit={handleSubmit} noValidate>
+          <label htmlFor="username" className="visually-hidden">
+            Email address
+          </label>
+          <div className="input-group">
+            <User className="input-icon" aria-hidden="true" />
+            <input
+              id="username"
+              name="username"
+              type="email"
+              autoComplete="username"
+              required
+              placeholder="Email address"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="login-input"
+              aria-describedby="username-error"
+              aria-invalid={!!error}
+            />
           </div>
-
-          {error && (
-            <div className="text-red-600 text-sm text-center">{error}</div>
-          )}
-
-          <div>
+          <label htmlFor="password" className="visually-hidden">
+            Password
+          </label>
+          <div className="input-group">
+            <Lock className="input-icon" aria-hidden="true" />
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="current-password"
+              required
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="login-input"
+              aria-describedby="password-error"
+              aria-invalid={!!error}
+            />
             <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="toggle-password-btn"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
+          {error && (
+            <div className="login-error" role="alert" id="login-error">
+              {error}
+            </div>
+          )}
+          <button
+            type="submit"
+            disabled={loading}
+            className="login-button"
+            aria-live="polite"
+          >
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
         </form>
+    );
+  }
+
+  return (
+    <div className="login-container">
+      <div className="login-card" role="main" aria-label="Login form">
+        <div className="login-graphic" aria-hidden="true">
+          <svg
+            width="80"
+            height="80"
+            viewBox="0 0 64 64"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="login-svg"
+          >
+            <circle cx="32" cy="32" r="30" stroke="#4F46E5" strokeWidth="4" />
+            <path
+              d="M20 44L32 32L44 44"
+              stroke="#4F46E5"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M32 32L32 20"
+              stroke="#4F46E5"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+        <h1 className="login-title">Welcome Back</h1>
+        <p className="login-subtitle">Sign in to your Talent App account</p>
+        {loginForm()}
+        <button
+          type="button"
+          className="back-button"
+          onClick={() => navigate('/')}
+          aria-label="Back to Home"
+        >
+          ← Back to Home
+        </button>
       </div>
     </div>
   );
