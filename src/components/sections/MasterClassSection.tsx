@@ -20,145 +20,7 @@ interface MasterClass {
   updatedAt: string;
 }
 
-// Mock data to replace API calls
-// const mockMasterClasses: MasterClass[] = [
-//   {
-//     _id: '1',
-//     masterClassBanner: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800',
-//     viewers: 1250,
-//     masterClassName: 'Advanced React Patterns & Performance Optimization',
-//     skills: ['React Hooks', 'Performance', 'State Management', 'Custom Hooks'],
-//     keynoteSpeaker: 'Sarah Johnson',
-//     goal: 'Master advanced React patterns for building scalable applications',
-//     location: 'Online Live Session',
-//     industryType: 'Technology',
-//     date: '2024-03-20T15:00:00Z',
-//     masterClassDesc: 'Deep dive into advanced React patterns, performance optimization techniques, and best practices for building production-ready applications.',
-//     createdAt: '2024-01-15T00:00:00Z',
-//     updatedAt: '2024-01-15T00:00:00Z'
-//   },
-//   {
-//     _id: '2',
-//     masterClassBanner: 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=800',
-//     viewers: 890,
-//     masterClassName: 'Digital Marketing Strategy for 2024',
-//     skills: ['SEO', 'Social Media', 'Content Strategy', 'Analytics'],
-//     keynoteSpeaker: 'Michael Chen',
-//     goal: 'Create winning digital marketing strategies that drive results',
-//     location: 'Hybrid - Mumbai',
-//     industryType: 'Marketing',
-//     date: '2024-03-22T14:00:00Z',
-//     masterClassDesc: 'Learn cutting-edge digital marketing strategies, emerging trends, and proven tactics to boost your brand presence and ROI.',
-//     createdAt: '2024-01-16T00:00:00Z',
-//     updatedAt: '2024-01-16T00:00:00Z'
-//   },
-//   {
-//     _id: '3',
-//     masterClassBanner: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800',
-//     viewers: 2100,
-//     masterClassName: 'Machine Learning in Production',
-//     skills: ['MLOps', 'Python', 'TensorFlow', 'Model Deployment'],
-//     keynoteSpeaker: 'Dr. Priya Sharma',
-//     goal: 'Deploy ML models at scale in production environments',
-//     location: 'Online Live Session',
-//     industryType: 'AI/ML',
-//     date: '2024-03-25T16:00:00Z',
-//     masterClassDesc: 'Comprehensive guide to taking machine learning models from development to production with best practices and real-world examples.',
-//     createdAt: '2024-01-17T00:00:00Z',
-//     updatedAt: '2024-01-17T00:00:00Z'
-//   },
-//   {
-//     _id: '4',
-//     masterClassBanner: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=800',
-//     viewers: 675,
-//     masterClassName: 'UX Design Psychology & User Behavior',
-//     skills: ['User Psychology', 'Design Thinking', 'Prototyping', 'User Research'],
-//     keynoteSpeaker: 'Emma Rodriguez',
-//     goal: 'Understand user psychology to create intuitive designs',
-//     location: 'Hybrid - Bangalore',
-//     industryType: 'Design',
-//     date: '2024-03-27T13:00:00Z',
-//     masterClassDesc: 'Explore the psychology behind user behavior and learn how to apply these insights to create more effective and engaging user experiences.',
-//     createdAt: '2024-01-18T00:00:00Z',
-//     updatedAt: '2024-01-18T00:00:00Z'
-//   },
-//   {
-//     _id: '5',
-//     masterClassBanner: 'https://images.pexels.com/photos/3184317/pexels-photo-3184317.jpeg?auto=compress&cs=tinysrgb&w=800',
-//     viewers: 1450,
-//     masterClassName: 'Blockchain & Web3 Development',
-//     skills: ['Solidity', 'Smart Contracts', 'DeFi', 'NFTs'],
-//     keynoteSpeaker: 'Alex Kumar',
-//     goal: 'Build decentralized applications on blockchain',
-//     location: 'Online Live Session',
-//     industryType: 'Blockchain',
-//     date: '2024-03-30T17:00:00Z',
-//     masterClassDesc: 'Learn blockchain fundamentals and build real-world decentralized applications using modern Web3 technologies and frameworks.',
-//     createdAt: '2024-01-19T00:00:00Z',
-//     updatedAt: '2024-01-19T00:00:00Z'
-//   },
-//   {
-//     _id: '6',
-//     masterClassBanner: 'https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=800',
-//     viewers: 980,
-//     masterClassName: 'Financial Planning & Investment Strategies',
-//     skills: ['Portfolio Management', 'Risk Assessment', 'Market Analysis', 'Investment Planning'],
-//     keynoteSpeaker: 'Rajesh Gupta',
-//     goal: 'Master personal finance and investment strategies',
-//     location: 'Hybrid - Delhi',
-//     industryType: 'Finance',
-//     date: '2024-04-02T15:30:00Z',
-//     masterClassDesc: 'Comprehensive guide to personal financial planning, investment strategies, and wealth building techniques for long-term success.',
-//     createdAt: '2024-01-20T00:00:00Z',
-//     updatedAt: '2024-01-20T00:00:00Z'
-//   },
-//   {
-//     _id: '7',
-//     masterClassBanner: 'https://images.pexels.com/photos/3184639/pexels-photo-3184639.jpeg?auto=compress&cs=tinysrgb&w=800',
-//     viewers: 1800,
-//     masterClassName: 'Leadership in the Digital Age',
-//     skills: ['Digital Leadership', 'Team Management', 'Change Management', 'Communication'],
-//     keynoteSpeaker: 'Anita Desai',
-//     goal: 'Develop leadership skills for the modern workplace',
-//     location: 'Hybrid - Pune',
-//     industryType: 'Leadership',
-//     date: '2024-04-05T14:00:00Z',
-//     masterClassDesc: 'Transform your leadership approach for the digital era with proven strategies for managing remote teams and driving organizational change.',
-//     createdAt: '2024-01-21T00:00:00Z',
-//     updatedAt: '2024-01-21T00:00:00Z'
-//   }
-// ];
-
-// const masterClassFilters = {
-//   industryType: {
-//     label: 'Industry',
-//     options: [
-//       { id: 'technology', label: 'Technology', value: 'Technology' },
-//       { id: 'marketing', label: 'Marketing', value: 'Marketing' },
-//       { id: 'ai-ml', label: 'AI/ML', value: 'AI/ML' },
-//       { id: 'design', label: 'Design', value: 'Design' },
-//       { id: 'blockchain', label: 'Blockchain', value: 'Blockchain' },
-//       { id: 'finance', label: 'Finance', value: 'Finance' },
-//       { id: 'leadership', label: 'Leadership', value: 'Leadership' },
-//     ],
-//     type: 'dropdown',
-//   },
-//   location: {
-//     label: 'Format',
-//     options: [
-//       { id: 'online', label: 'Online Live', value: 'Online Live Session' },
-//       { id: 'hybrid-mumbai', label: 'Hybrid - Mumbai', value: 'Hybrid - Mumbai' },
-//       { id: 'hybrid-bangalore', label: 'Hybrid - Bangalore', value: 'Hybrid - Bangalore' },
-//       { id: 'hybrid-delhi', label: 'Hybrid - Delhi', value: 'Hybrid - Delhi' },
-//       { id: 'hybrid-pune', label: 'Hybrid - Pune', value: 'Hybrid - Pune' },
-//     ],
-//     type: 'dropdown',
-//   },
-// };
-
 const MASTERCLASSES_PER_PAGE = 3;
-
-const API_BASE_URL = 'http://localhost:3000/api';
 
 const MasterClassSection: React.FC = () => {
   const [masterClasses, setMasterClasses] = useState<MasterClass[]>([]);
@@ -170,7 +32,7 @@ const MasterClassSection: React.FC = () => {
   useEffect(() => {
     const fetchMasterClasses = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/masterclasses`);
+        const res = await axios.get('/api/masterclasses');
         setMasterClasses(res.data);
         setFilteredMasterClasses(res.data);
       } catch (error) {

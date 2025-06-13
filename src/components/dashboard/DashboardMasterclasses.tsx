@@ -22,7 +22,7 @@ const DashboardMasterclasses: React.FC = () => {
       <td className="px-6 py-4 whitespace-nowrap">
         {item.masterClassBanner && (
           <img
-            src={`http://localhost:3000${item.masterClassBanner}`}
+            src={item.masterClassBanner}
             alt="Banner"
             className="h-12 w-20 object-cover rounded"
           />

@@ -22,7 +22,7 @@ const DashboardPostGrad: React.FC = () => {
       <td className="px-6 py-4 whitespace-nowrap">
         {item.banner && (
           <img
-            src={`http://localhost:3000${item.banner}`}
+            src={item.banner}
             alt="Banner"
             className="h-12 w-20 object-cover rounded"
           />

@@ -22,7 +22,7 @@ const DashboardBootcamps: React.FC = () => {
       <td className="px-6 py-4 whitespace-nowrap">
         {item.bootcampBanner && (
           <img
-            src={`http://localhost:3000${item.bootcampBanner}`}
+            src={item.bootcampBanner}
             alt="Banner"
             className="h-12 w-20 object-cover rounded"
           />

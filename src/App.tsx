@@ -19,7 +19,7 @@ import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import MasterClassSection from './components/sections/MasterClassSection';
 
-export const API_BASE_URL = 'http://localhost:3000';
+export const API_BASE_URL = '';
 
 function HomePage() {
   return (

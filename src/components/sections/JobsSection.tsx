@@ -4,8 +4,6 @@ import { motion } from 'framer-motion';
 import JobCard from '../ui/JobCard';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000/api';
-
 interface Job {
   _id: string;
   jobBanner: string;
@@ -37,7 +35,7 @@ const JobsSection: React.FC = () => {
    useEffect(() => {
     const fetchJobDetailSection = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/jobs`);
+        const res = await axios.get('/api/jobs');
         setJobs(res.data);
         setFilteredJobs(res.data);
       } catch (error) {

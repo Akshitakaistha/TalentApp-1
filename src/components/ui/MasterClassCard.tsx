@@ -23,8 +23,6 @@ interface MasterClassCardProps {
 }
 
 const MasterClassCard: React.FC<MasterClassCardProps> = ({ masterClass }) => {
-  const API_BASE_URL = 'http://localhost:3000';
-
   const formattedDate = new Date(masterClass.date).toLocaleString('en-GB', {
     day: '2-digit',
     month: 'short',
@@ -42,35 +40,6 @@ const MasterClassCard: React.FC<MasterClassCardProps> = ({ masterClass }) => {
       whileHover={{ y: -8, scale: 1.02 }}
       className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 w-full max-w-sm mx-auto overflow-hidden border border-gray-100"
     >
-      {/* Banner with Gradient Overlay */}
-      {/* <div className="relative w-full h-52 overflow-hidden">
-        <img
-          src={`${API_BASE_URL}${masterClass.masterClassBanner}`}
-          alt={masterClass.masterClassName}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-        
-        <div className="absolute top-4 right-4">
-          <span className="bg-white/90 backdrop-blur-sm text-gray-800 text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
-            {masterClass.industryType}
-          </span>
-        </div>
-
-        <div className="absolute top-4 left-4">
-          <div className="flex items-center gap-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold px-2.5 py-1.5 rounded-full shadow-lg">
-            <Play size={12} fill="currentColor" />
-            <span>LIVE</span>
-          </div>
-        </div>
-        <div className="absolute bottom-3 right-3">
-          <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-full">
-            <Users size={12} />
-            <span>{masterClass.viewers.toLocaleString()} viewers</span>
-          </div>
-        </div>
-      </div> */}
-
       {/* Content */}
       <div className="p-6 space-y-4">
         {/* Title */}
@@ -128,11 +97,6 @@ const MasterClassCard: React.FC<MasterClassCardProps> = ({ masterClass }) => {
             </div>
           </div>
         )}
-
-        {/* Description Preview */}
-        {/* <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
-          {masterClass.masterClassDesc}
-        </p> */}
 
         {/* Action Button */}
         <motion.button

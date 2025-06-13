@@ -24,8 +24,6 @@ interface GlobalProgram {
 
 const PROGRAMS_PER_PAGE = 3;
 
-const API_BASE_URL = 'http://localhost:3000/api';
-
 const GlobalSection: React.FC = () => {
   const [globalPrograms, setGlobalPrograms] = useState<GlobalProgram[]>([]);
   const [filteredPrograms, setFilteredPrograms] = useState<GlobalProgram[]>([]);
@@ -35,7 +33,7 @@ const GlobalSection: React.FC = () => {
   useEffect(() => {
     const fetchGlobalPrograms = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/global`);
+        const res = await axios.get('/api/global');
         setGlobalPrograms(res.data);
         setFilteredPrograms(res.data);
       } catch (error) {
